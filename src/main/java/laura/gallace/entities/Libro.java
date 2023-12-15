@@ -2,11 +2,13 @@ package laura.gallace.entities;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="libro")
 @DiscriminatorValue("libro")
+@NamedQuery(name = "ricercaLibroPerAutore",query = "SELECT l FROM Libro l WHERE l.autore = :autore")
 public class Libro extends ElementoBibliotecario {
     private String autore;
     private String genere;

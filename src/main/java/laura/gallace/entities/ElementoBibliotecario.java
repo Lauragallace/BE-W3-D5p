@@ -7,6 +7,9 @@ import javax.persistence.*;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tipo_elementobibliotecario")
+@NamedQuery(name = "ricercaElementoBibliotecarioPerISBN",query = "SELECT l FROM ElementoBibliotecario l WHERE l.codiceISBN = :codiceISBN")
+@NamedQuery(name = "ricercaElementoBibliotecarioPerAnnoPubblicazione",query = "SELECT l FROM ElementoBibliotecario l WHERE l.annoPubblicazione = :annoPubblicazione")
+@NamedQuery(name = "ricercaElementoBibliotecarioPerTitoloOparte",query = "SELECT l FROM ElementoBibliotecario l WHERE l.titolo LIKE CONCAT('%', :titolo, '%')")
 public abstract class ElementoBibliotecario {
     @Id
     @GeneratedValue
