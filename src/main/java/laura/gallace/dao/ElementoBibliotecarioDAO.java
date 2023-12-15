@@ -1,5 +1,7 @@
 package laura.gallace.dao;
 
+import laura.gallace.entities.ElementoBibliotecario;
+
 import javax.persistence.*;
 
 @Entity
@@ -21,50 +23,54 @@ public class ElementoBibliotecarioDAO {
     private int annoPubblicazione;
     @Column(name = "numero_pagine")
     private int numeroPagine;
-    public void ElementoBibliotecario() {
+    private final EntityManager em;
+
+    public ElementoBibliotecarioDAO(EntityManager em) {
+        this.em = em;
+    }
+    public void save(ElementoBibliotecario elementoBibliotecario) {
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        em.persist(elementoBibliotecario);
+        transaction.commit();
+        System.out.println("ElementoBibliotecario" + elementoBibliotecario.getTitolo() + " aggiunto correttamente al database!");
     }
 
-    public void ElementoBibliotecario(String codiceISBN, String titolo, int annoPubblicazione, int numeroPagine) {
-        this.codiceISBN = codiceISBN;
-        this.titolo = titolo;
-        this.annoPubblicazione = annoPubblicazione;
-        this.numeroPagine = numeroPagine;
+    public ElementoBibliotecario findById(long id) {
+        return em.find(ElementoBibliotecario.class,id);
     }
 
-    public long getId() {
-        return id;
+
+    public void findByIdAndDelete(long id) {
+        ElementoBibliotecario found = this.findById(id);
+
+        if (found != null) {
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
+            em.remove(found);
+            transaction.commit();
+            System.out.println("ElementoBibliotecario" + found.getTitolo() + "rimosso correttamente dal database!");
+        } else {
+            System.out.println("ElementoBibliotecario con id " + id + " non trovato");
+        }
+
+
     }
 
-    public String getTitolo() {
-        return titolo;
-    }
+    public void findByISBNAndDelete(String isbn) {
+        TypedQuery<ElementoBibliotecario> findByISBN = em.createQuery("SELECT l FROM ElementoBibliotecario l WHERE l.codiceISBN = :isbn",ElementoBibliotecario.class);
+        findByISBN.setParameter("isbn",isbn);
+      ElementoBibliotecario found = findByISBN.getSingleResult();
+        if (found != null) {
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
+            em.remove(found);
+            transaction.commit();
+            System.out.println("ElementoBibliotecario " + found.getTitolo() + " rimosso correttamente dal database!");
+        } else {
+            System.out.println("ElementoBibliotecario con isbn " + isbn + " non trovato");
+        }
+    }}
 
-    public void setTitolo(String titolo) {
-        titolo = titolo;
-    }
 
-    public int getAnnoPubblicazione() {
-        return annoPubblicazione;
-    }
-
-    public void setAnnoPubblicazione(int annoPubblicazione) {
-        this.annoPubblicazione = annoPubblicazione;
-    }
-
-    public int getNumeroPagine() {
-        return numeroPagine;
-    }
-
-    public void setNumeroPagine(int numeroPagine) {
-        this.numeroPagine = numeroPagine;
-    }
-
-    @Override
-    public String toString() {
-        return "id=" + id +
-                ", Titolo='" + titolo + '\'' +
-                ", annoPubblicazione=" + annoPubblicazione +
-                ", numeroPagine=" + numeroPagine;
-    }
-}
 
