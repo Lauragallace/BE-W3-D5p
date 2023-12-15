@@ -14,8 +14,8 @@ public class Rivista extends ElementoBibliotecario {
     public Rivista(){
 }
 
-    public Rivista(String titolo, int annoPubblicazione, int numeroPagine, Periodicità periodicità) {
-        super(titolo, annoPubblicazione, numeroPagine);
+    public Rivista(String codiceISBN, String titolo, int annoPubblicazione, int numeroPagine, Periodicità periodicità) {
+        super(codiceISBN, titolo, annoPubblicazione, numeroPagine);
         this.periodicità = periodicità;
     }
 

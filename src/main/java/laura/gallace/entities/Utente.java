@@ -17,7 +17,7 @@ private long id;
     private LocalDate dataDiNascita;
     @Column(name = "numero_di_tessera")
     private long numeroDiTessera;
-    
+
     public Utente() {
     }
     public Utente(String nome, String cognome, LocalDate dataDiNascita, long numeroDiTessera) {

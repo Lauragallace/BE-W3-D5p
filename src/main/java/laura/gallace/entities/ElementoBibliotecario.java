@@ -1,5 +1,7 @@
 package laura.gallace.entities;
 
+import laura.gallace.entities.enums.Periodicità;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,6 +11,8 @@ public abstract class ElementoBibliotecario {
     @Id
     @GeneratedValue
     private long id;
+    @Column(unique = true, name = "codice_isbn")
+    private String codiceISBN;
     @Column(name = "titolo")
     private String Titolo;
     @Column(name = "anno_pubblicazione")
@@ -21,12 +25,11 @@ public abstract class ElementoBibliotecario {
 
     }
 
-    public ElementoBibliotecario(String titolo, int annoPubblicazione, int numeroPagine) {
+    public ElementoBibliotecario(String codiceISBN, String titolo, int annoPubblicazione, int numeroPagine) {
         Titolo = titolo;
         this.annoPubblicazione = annoPubblicazione;
         this.numeroPagine = numeroPagine;
     }
-
 
     public long getId() {
         return id;
