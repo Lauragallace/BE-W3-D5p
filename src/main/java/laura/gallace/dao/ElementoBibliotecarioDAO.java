@@ -1,58 +1,70 @@
 package laura.gallace.dao;
 
-import laura.gallace.entities.ElementoBibliotecario;
+import javax.persistence.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
-
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_elementobibliotecario")
+@NamedQuery(name = "ricercaElementoBibliotecarioPerISBN",query = "SELECT l FROM ElementoBibliotecario l WHERE l.codiceISBN = :codiceISBN")
+@NamedQuery(name = "ricercaElementoBibliotecarioPerAnnoPubblicazione",query = "SELECT l FROM ElementoBibliotecario l WHERE l.annoPubblicazione = :annoPubblicazione")
+@NamedQuery(name = "ricercaElementoBibliotecarioPerTitoloOparte",query = "SELECT l FROM ElementoBibliotecario l WHERE l.titolo LIKE CONCAT('%', :titolo, '%')")
 public class ElementoBibliotecarioDAO {
-    private final EntityManager em;
+    @Id
+    @GeneratedValue
+    private long id;
 
-    public ElementoBibliotecarioDAO(EntityManager em) {
-        this.em = em;
-    }
-    public void save(ElementoBibliotecario elementoBibliotecario) {
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
-        em.persist(elementoBibliotecario);
-        transaction.commit();
-        System.out.println("ElementoBibliotecario" + elementoBibliotecario.getTitolo() + " aggiunto correttamente al database!");
-    }
-
-    public ElementoBibliotecario findById(long id) {
-        return em.find(ElementoBibliotecario.class,id);
+    @Column(unique = true, name = "codice_isbn")
+    private String codiceISBN;
+    @Column(name = "titolo")
+    private String titolo;
+    @Column(name = "anno_pubblicazione")
+    private int annoPubblicazione;
+    @Column(name = "numero_pagine")
+    private int numeroPagine;
+    public void ElementoBibliotecario() {
     }
 
-
-    public void findByIdAndDelete(long id) {
-        ElementoBibliotecario found = this.findById(id);
-
-        if (found != null) {
-            EntityTransaction transaction = em.getTransaction();
-            transaction.begin();
-            em.remove(found);
-            transaction.commit();
-            System.out.println("ElementoBibliotecario" + found.getTitolo() + "rimosso correttamente dal database!");
-        } else {
-            System.out.println("ElementoBibliotecario con id " + id + " non trovato");
-        }
-
-
+    public void ElementoBibliotecario(String codiceISBN, String titolo, int annoPubblicazione, int numeroPagine) {
+        this.codiceISBN = codiceISBN;
+        this.titolo = titolo;
+        this.annoPubblicazione = annoPubblicazione;
+        this.numeroPagine = numeroPagine;
     }
 
-    public void findByISBNAndDelete(String isbn) {
-        TypedQuery<ElementoBibliotecario> findByISBN = em.createQuery("SELECT l FROM ElementoBibliotecario l WHERE l.codiceISBN = :isbn",ElementoBibliotecario.class);
-        findByISBN.setParameter("isbn",isbn);
-      ElementoBibliotecario found = findByISBN.getSingleResult();
-        if (found != null) {
-            EntityTransaction transaction = em.getTransaction();
-            transaction.begin();
-            em.remove(found);
-            transaction.commit();
-            System.out.println("ElementoBibliotecario " + found.getTitolo() + " rimosso correttamente dal database!");
-        } else {
-            System.out.println("ElementoBibliotecario con isbn " + isbn + " non trovato");
-        }
+    public long getId() {
+        return id;
+    }
+
+    public String getTitolo() {
+        return titolo;
+    }
+
+    public void setTitolo(String titolo) {
+        titolo = titolo;
+    }
+
+    public int getAnnoPubblicazione() {
+        return annoPubblicazione;
+    }
+
+    public void setAnnoPubblicazione(int annoPubblicazione) {
+        this.annoPubblicazione = annoPubblicazione;
+    }
+
+    public int getNumeroPagine() {
+        return numeroPagine;
+    }
+
+    public void setNumeroPagine(int numeroPagine) {
+        this.numeroPagine = numeroPagine;
+    }
+
+    @Override
+    public String toString() {
+        return "id=" + id +
+                ", Titolo='" + titolo + '\'' +
+                ", annoPubblicazione=" + annoPubblicazione +
+                ", numeroPagine=" + numeroPagine;
     }
 }
+
